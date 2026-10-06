@@ -49,8 +49,8 @@ else:
 with st.sidebar:
     st.header("⚙️ Control Panel")
     
-    # The new theme toggle button!
-    is_dark_mode = st.toggle("🌙 Dark Theme", value=True)
+    # The new theme toggle button! (Defaults to False so White theme loads first)
+    is_dark_mode = st.toggle("🌙 Dark Theme", value=False)
     st.markdown("---")
     
     if api_key:
