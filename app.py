@@ -38,22 +38,34 @@ header {visibility: hidden;}
 </style>
 """
 
+# --- SECURE API KEY HANDLING ---
+api_key = ""
+# Safely check if secrets exist without crashing
+if "GROQ_API_KEY" in st.secrets:
+    api_key = st.secrets["GROQ_API_KEY"]
+
 # --- SIDEBAR & THEME TOGGLE ---
 with st.sidebar:
     st.header("⚙️ Control Panel")
     
     # The new theme toggle button!
     is_dark_mode = st.toggle("🌙 Dark Theme", value=True)
-    
     st.markdown("---")
-    st.success("✅ Secure Connection Active")
+    
+    # "Bring Your Own Key" UI
+    if not api_key:
+        st.warning("Bring Your Own Key Mode")
+        api_key = st.text_input("Enter your free Groq API Key to start:", type="password")
+        st.markdown("[Get a free key here](https://console.groq.com/keys)")
+    else:
+        st.success("✅ Secure Connection Active")
+        
     st.markdown("This AI agent connects directly to your SQL database using the Model Context Protocol (MCP).")
     st.markdown("---")
     
     # Clear Chat Button
     if st.button("🗑️ Clear Chat History"):
         st.session_state.messages = [
-
             {"role": "assistant", "content": "Hello! I am your AI Data Analyst. Try asking: **'What are our top 3 best-selling products?'**"}
         ]
         st.rerun()
@@ -69,11 +81,9 @@ st.title("📊 AI Data Analyst Copilot")
 st.markdown("💬 **Chat with your SQL Database in Plain English!**")
 st.divider()
 
-# --- SECURE API KEY HANDLING ---
-if "GROQ_API_KEY" in st.secrets:
-    api_key = st.secrets["GROQ_API_KEY"]
-else:
-    st.error("🚨 **API Key Missing!** Please add your Groq API Key to `.streamlit/secrets.toml` to continue.")
+# Stop the app gracefully until they enter a key
+if not api_key:
+    st.info("👋 Welcome to the AI Data Analyst! To begin chatting, please enter a Groq API Key in the left sidebar.")
     st.stop()
 
 # --- LANGCHAIN TOOLS ---
