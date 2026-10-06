@@ -1,0 +1,7 @@
+mcp<2
+pydantic
+streamlit
+langchain
+langchain-groq
+langchain-core
+langgraph
